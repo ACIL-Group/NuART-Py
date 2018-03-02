@@ -43,6 +43,7 @@ class FuzzyART(BaseEstimator, ClusterMixin):
 
         self.w = None
         self.num_clusters = None
+        self.num_features = None
         self.labels = None
         self.iterations = 0
 
@@ -65,12 +66,12 @@ class FuzzyART(BaseEstimator, ClusterMixin):
 
     def fit(self, inputs, labels=None):
 
-        num_features = inputs.shape[1]
+        self.num_features = inputs.shape[1]
 
         if self.w_init is not None:
-            assert self.w_init.shape[1] == (num_features * 2)
+            assert self.w_init.shape[1] == (self.num_features * 2)
 
-        self.w = self.w_init if self.w_init is not None else np.ones((1, num_features * 2))
+        self.w = self.w_init if self.w_init is not None else np.ones((1, self.num_features * 2))
         self.num_clusters = self.w.shape[0] - 1
 
         # complement-code the data
@@ -162,3 +163,12 @@ class FuzzyART(BaseEstimator, ClusterMixin):
         if self.update_fn is not None:
             return self.update_fn(pattern, category_w, beta)
         return beta * self.pattern_compare(pattern, category_w) + (1 - beta) * category_w
+
+    @property
+    def cluster_prototypes(self):
+        clusters = np.array([
+            self.w[:self.num_clusters, :self.num_features],
+            1 - self.w[:self.num_clusters, self.num_features:]
+        ])
+
+        return clusters.round(2)
