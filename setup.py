@@ -13,12 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import setuptools
 from setuptools import setup
 
 __author__ = 'Islam Elnabarawy'
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='nuart',
     version='0.0.1',
-    install_requires=['numpy', 'scikit-learn']
+    install_requires=['numpy', 'scikit-learn'],
+    author="Islam Elnabarawy",
+    author_email="islam.ossama@gmail.com",
+    description="NuART-Py: Python Library of Adaptive Resonance Theory Neural Networks",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/ACIL-Group/NuART-Py",
+    packages=setuptools.find_packages(),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+    ],
 )

@@ -1,2 +1,5 @@
-# NuART
-NuART: Adaptive Resonance Theory Neural Network Library
+# NuART-Py
+
+Python Library of Adaptive Resonance Theory Neural Networks
+
+
