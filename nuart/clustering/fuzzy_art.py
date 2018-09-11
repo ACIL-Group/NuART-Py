@@ -71,8 +71,8 @@ class FuzzyART(BaseEstimator, ClusterMixin):
         if self.w_init is not None:
             assert self.w_init.shape[1] == (self.num_features * 2)
 
-        self.w = self.w_init if self.w_init is not None else np.ones((1, self.num_features * 2))
-        self.num_clusters = self.w.shape[0] - 1
+        self.w = self.w_init if self.w_init is not None else np.ones((0, self.num_features * 2))
+        self.num_clusters = self.w.shape[0]
 
         # complement-code the data
         dataset = np.concatenate((inputs, 1 - inputs), axis=1)
@@ -113,13 +113,13 @@ class FuzzyART(BaseEstimator, ClusterMixin):
         # evaluate the pattern to get the winning category
         winner = self.eval_pattern(pattern)
 
-        # update the weight of the winning neuron
-        self.w[winner, :] = self.weight_update(pattern, self.w[winner, :], self.beta)
-
         # check if the uncommitted node was the winner
         if (winner + 1) > self.num_clusters:
             self.num_clusters += 1
             self.w = np.concatenate((self.w, np.ones((1, self.w.shape[1]))))
+
+        # update the weight of the winning neuron
+        self.w[winner, :] = self.weight_update(pattern, self.w[winner, :], self.beta)
 
         return winner
 
@@ -142,7 +142,7 @@ class FuzzyART(BaseEstimator, ClusterMixin):
                 # shut off this category from further testing
                 matches[winner] = 0
                 match_attempts += 1
-        return len(matches) - 1
+        return len(matches)
 
     def pattern_compare(self, pattern, category_w):
         if self.distance_fn is not None:
