@@ -25,8 +25,13 @@ __author__ = 'Islam Elnabarawy'
 
 
 class FuzzyART(BaseEstimator, ClusterMixin):
+    class MaxClustersReached(BaseException):
+        def __init__(self, num_clusters, max_clusters) -> None:
+            message = "Current number of clusters {} exceeds the maximum value of {}".format(num_clusters, max_clusters)
+            super().__init__(message)
+
     def __init__(self, rho, alpha, beta, max_epochs=np.inf, shuffle=True, random_seed=None, w_init=None,
-                 distance_fn=None, match_fn=None, vigilance_fn=None, update_fn=None):
+                 distance_fn=None, match_fn=None, vigilance_fn=None, update_fn=None, max_clusters=None):
         self.rho = rho
         self.alpha = alpha
         self.beta = beta
@@ -40,6 +45,8 @@ class FuzzyART(BaseEstimator, ClusterMixin):
         self.match_fn = match_fn
         self.vigilance_fn = vigilance_fn
         self.update_fn = update_fn
+
+        self.max_clusters = max_clusters
 
         self.w = None
         self.num_clusters = None
@@ -117,6 +124,10 @@ class FuzzyART(BaseEstimator, ClusterMixin):
         if (winner + 1) > self.num_clusters:
             self.num_clusters += 1
             self.w = np.concatenate((self.w, np.ones((1, self.w.shape[1]))))
+
+        # check if the number of clusters has exceeded max_clusters
+        if self.max_clusters is not None and self.num_clusters > self.max_clusters:
+            raise FuzzyART.MaxClustersReached(self.num_clusters, self.max_clusters)
 
         # update the weight of the winning neuron
         self.w[winner, :] = self.weight_update(pattern, self.w[winner, :], self.beta)
