@@ -23,7 +23,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='nuart',
-    version='0.0.1',
+    version='0.0.2',
     install_requires=['numpy', 'scikit-learn'],
     author="Islam Elnabarawy",
     author_email="islam.ossama@gmail.com",
