@@ -15,8 +15,10 @@
 """
 """
     References:
-    [1] L. E. Brito da Silva, I. Elnabarawy, and D. C. Wunsch II, 
-        "Dual Vigilance Fuzzy ART," Neural Networks Letters. To appear.
+    [1] L. E. Brito da Silva, I. Elnabarawy, and D. C. Wunsch II, "Dual Vigilance 
+        Fuzzy ART," Neural Networks Letters. To appear.
+    [2] L. E. Brito da Silva, I. Elnabarawy, and D. C. Wunsch II, "Dual Vigilance 
+        Fuzzy ART," 2018. [Online]. Available: https://github.com/ACIL-Group/DVFA
 """
 
 import random
