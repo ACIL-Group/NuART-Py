@@ -13,6 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+"""
+    References:
+    [1] L. E. Brito da Silva, I. Elnabarawy, and D. C. Wunsch II, 
+        "Dual Vigilance Fuzzy ART," Neural Networks Letters. To appear.
+"""
 
 import random
 
