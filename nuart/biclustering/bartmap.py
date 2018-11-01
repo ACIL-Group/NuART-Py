@@ -20,6 +20,7 @@
 #     Collaborative Filtering Recommender System," in Proceedings of the 2016 International
 #     Joint Conference on Neural Networks (IJCNN ’16), 2016, pp. 2986-2991.
 
+import multiprocessing
 import random
 
 import numpy as np
@@ -150,13 +151,22 @@ class BARTMAP(object):
         self.feature_labels = None
         self.num_feature_labels = 0
 
-    def train(self, data):
-        self.num_samples, self.num_features = data.shape
-        self.ARTa = FuzzyARTModule(*self.arta_settings, self.num_features)
-        self.ARTb = FuzzyARTModule(*self.artb_settings, self.num_samples)
+        self.map = map
 
+    def train(self, data):
         sample_data = preprocessing.MinMaxScaler().fit_transform(data)
         feature_data = preprocessing.MinMaxScaler().fit_transform(data.transpose())
+
+        return self.train_preprocessed(sample_data, feature_data)
+
+    def train_preprocessed(self, sample_data, feature_data):
+
+        pool = multiprocessing.Pool()
+        self.map = pool.map
+
+        self.num_samples, self.num_features = sample_data.shape
+        self.ARTa = FuzzyARTModule(*self.arta_settings, self.num_features)
+        self.ARTb = FuzzyARTModule(*self.artb_settings, self.num_samples)
 
         self.feature_labels, _ = self.ARTb.train_dataset(feature_data)
         self.num_feature_labels = self.ARTb.num_clusters
@@ -181,13 +191,11 @@ class BARTMAP(object):
                     break
                 else:
                     # the sample was assigned to an existing cluster; check correlation threshold
-                    correlations = np.zeros(self.num_feature_labels, dtype=np.float32)
-                    sample_ix, = np.nonzero(self.sample_labels[:ix] == sample_category)
-                    for jx in range(self.num_feature_labels):
-                        # compute average correlation between this sample and each feature cluster
-                        feature_ix, = np.nonzero(self.feature_labels == jx)
-                        bicluster = sample_data[sample_ix][:, feature_ix]
-                        correlations[jx], _ = self.biclusterCorr(bicluster, sample[feature_ix])
+                    sample_cluster = sample_data[np.nonzero(self.sample_labels[:ix] == sample_category)]
+                    correlations = np.array([
+                        self.get_bicluster_correlations(jx, sample, sample_cluster)
+                        for jx in range(self.num_feature_labels)
+                    ])
 
                     # check the correlations against the threshold
                     if np.any(correlations > self.corr_thresh) or self.ARTa.rho >= 1:
@@ -201,24 +209,28 @@ class BARTMAP(object):
                         if self.ARTa.rho > 1:
                             self.ARTa.rho = 1
 
+        pool.close()
+        self.map = map
+
+    def get_bicluster_correlations(self, jx, sample, sample_cluster):
+        feature_ix = np.nonzero(self.feature_labels == jx)
+        return self.get_average_correlation(sample_cluster[:, feature_ix], sample[feature_ix])
+
+    def get_average_correlation(self, bicluster, sample):
+        # compute the average of the correlation between each pair of samples
+        return np.array(list(self.map(BARTMAP.get_correlation_args, [(row, sample) for row in bicluster]))).mean()
+
     @staticmethod
-    def biclusterCorr(bicluster, sample):
-        # preallocate correlation vector
-        num_samples = bicluster.shape[0]
-        bicorr = np.zeros(num_samples)
+    def get_correlation_args(args):
+        return BARTMAP.get_correlation(*args)
 
-        # compute the correlation for each pair of users
-        for ix in range(num_samples):
-            # compute the terms for all the item values
-            terms1 = sample - np.mean(sample)
-            terms2 = bicluster[ix, :] - np.mean(bicluster[ix, :])
-            # compute the sums to find the user-pair correlation
-            numerator = np.sum(np.multiply(terms1, terms2))
-            root1 = np.sqrt(np.sum(np.multiply(terms1, terms1)))
-            root2 = np.sqrt(np.sum(np.multiply(terms2, terms2)))
-            if root1 == 0 or root2 == 0:
-                bicorr[ix] = 0
-            else:
-                bicorr[ix] = numerator / (root1 * root2)
-
-        return np.mean(bicorr), bicorr
+    @staticmethod
+    def get_correlation(x, y):
+        # compute the terms for all the item values
+        terms1 = x - np.mean(x)
+        terms2 = y - np.mean(y)
+        # compute the sums to find the pairwise correlation
+        numerator = np.sum(np.multiply(terms1, terms2))
+        root1 = np.sqrt(np.sum(np.multiply(terms1, terms1)))
+        root2 = np.sqrt(np.sum(np.multiply(terms2, terms2)))
+        return numerator / (root1 * root2) if root1 != 0 and root2 != 0 else 0
