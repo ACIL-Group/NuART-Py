@@ -24,7 +24,7 @@ with open("README.md", "r") as fh:
 setup(
     name='nuart',
     version='0.0.4',
-    install_requires=['numpy', 'scikit-learn'],
+    install_requires=['numpy', 'scikit-learn', 'scipy'],
     author="Islam Elnabarawy",
     author_email="islam.ossama@gmail.com",
     description="NuART-Py: Python Library of Adaptive Resonance Theory Neural Networks",
