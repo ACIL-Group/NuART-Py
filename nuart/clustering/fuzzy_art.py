@@ -13,12 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-"""
-    References:
-    [1] G. Carpenter, S. Grossberg, and D. Rosen, "Fuzzy ART: Fast
-        stable learning and categorization of analog patterns by an adaptive
-        resonance system," Neural networks, vol. 4, no. 6, pp. 759�771, 1991.
-"""
+# References:
+# [1] G. Carpenter, S. Grossberg, and D. Rosen, "Fuzzy ART: Fast
+#     stable learning and categorization of analog patterns by an adaptive
+#     resonance system," Neural networks, vol. 4, no. 6, pp. 759�771, 1991.
 
 import random
 

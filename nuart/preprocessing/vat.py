@@ -16,6 +16,7 @@
 # References:
 # [1] J. C. Bezdek and R. J. Hathaway, "VAT: a tool for visual assessment of (cluster) tendency," in Proceedings
 #     of the 2002 International Joint Conference on Neural Networks. IJCNN'02 (Cat. No.02CH37290), pp. 2225–2230.
+
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 

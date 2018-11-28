@@ -12,14 +12,14 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
-    References:
-    [1] R. Xu and D. C. Wunsch II, "BARTMAP: A viable structure for biclustering," 
-        Neural Networks, vol. 24, no. 7, pp. 709-716, 2011.
-    [2] I. Elnabarawy, D. C. Wunsch II, and A. M. Abdelbar, "Biclustering ARTMAP 
-        Collaborative Filtering Recommender System," in Proceedings of the 2016 International 
-        Joint Conference on Neural Networks (IJCNN ’16), 2016, pp. 2986-2991.
 """
+# References:
+# [1] R. Xu and D. C. Wunsch II, "BARTMAP: A viable structure for biclustering,"
+#     Neural Networks, vol. 24, no. 7, pp. 709-716, 2011.
+# [2] I. Elnabarawy, D. C. Wunsch II, and A. M. Abdelbar, "Biclustering ARTMAP
+#     Collaborative Filtering Recommender System," in Proceedings of the 2016 International
+#     Joint Conference on Neural Networks (IJCNN ’16), 2016, pp. 2986-2991.
+
 import random
 
 import numpy as np

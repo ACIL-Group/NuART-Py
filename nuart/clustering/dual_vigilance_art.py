@@ -13,13 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-"""
-    References:
-    [1] L. E. Brito da Silva, I. Elnabarawy, and D. C. Wunsch II, "Dual Vigilance 
-        Fuzzy Adaptive Resonance Theory," Neural networks, vol. 109, pp. 1–5, 2019.
-    [2] L. E. Brito da Silva, I. Elnabarawy, and D. C. Wunsch II, "Dual Vigilance 
-        Fuzzy ART," 2018. [Online]. Available: https://github.com/ACIL-Group/DVFA
-"""
+# References:
+# [1] L. E. Brito da Silva, I. Elnabarawy, and D. C. Wunsch II, "Dual Vigilance
+#     Fuzzy Adaptive Resonance Theory," Neural networks, vol. 109, pp. 1–5, 2019.
+# [2] L. E. Brito da Silva, I. Elnabarawy, and D. C. Wunsch II, "Dual Vigilance
+#     Fuzzy ART," 2018. [Online]. Available: https://github.com/ACIL-Group/DVFA
 
 import random
 
