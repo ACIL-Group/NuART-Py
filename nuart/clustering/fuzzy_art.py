@@ -187,3 +187,19 @@ class FuzzyART(BaseEstimator, ClusterMixin):
         ])
 
         return clusters.round(2)
+
+
+def fa_cluster(args):
+    from sklearn.metrics import adjusted_rand_score
+    rho, inputs, targets = args
+    fa = FuzzyART(rho, 0.001, 1.0, shuffle=False)
+    labels = fa.fit(inputs)
+    return adjusted_rand_score(targets, labels)
+
+
+def eval_fuzzy_art(inputs, targets, rho_values):
+    import multiprocessing as mp
+    with mp.Pool() as pool:
+        ari_values = pool.map(fa_cluster, [(rho, inputs, targets) for rho in rho_values])
+
+    return ari_values

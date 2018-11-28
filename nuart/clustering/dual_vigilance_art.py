@@ -187,3 +187,19 @@ class DualVigilanceART(BaseEstimator, ClusterMixin):
         if self.update_fn is not None:
             return self.update_fn(pattern, category_w, beta)
         return beta * self.pattern_compare(pattern, category_w) + (1 - beta) * category_w
+
+
+def dvfa_cluster(args):
+    from sklearn.metrics import adjusted_rand_score
+    rho_ub, rho_lb, inputs, targets = args
+    fa = DualVigilanceART(rho_ub, rho_lb, 0.001, 1.0, shuffle=False)
+    labels = fa.fit(inputs)
+    return adjusted_rand_score(targets, labels)
+
+
+def eval_dvfa(inputs, targets, rho_values):
+    import multiprocessing as mp
+    with mp.Pool() as pool:
+        ari_values = pool.map(dvfa_cluster, [(rho_ub, rho_lb, inputs, targets) for (rho_ub, rho_lb) in rho_values])
+
+    return ari_values
