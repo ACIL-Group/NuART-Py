@@ -88,16 +88,15 @@ class DualVigilanceART(BaseEstimator, ClusterMixin):
         if self.w_init is not None:
             assert self.w_init.shape[1] == (self.num_features * 2)
 
-        self.w = self.w_init if self.w_init is not None else np.ones((1, self.num_features * 2))
-        self.cluster_map = self.cluster_map_init if self.cluster_map_init is not None else {0: 0}
-        self.num_categories = self.w.shape[0] - 1
+        self.w = self.w_init if self.w_init is not None else np.ones((0, self.num_features * 2))
+        self.cluster_map = self.cluster_map_init if self.cluster_map_init is not None else {}
+        self.num_categories = self.w.shape[0]
         self.num_clusters = len(set(self.cluster_map.values()))
 
         # complement-code the data
         dataset = np.concatenate((inputs, 1 - inputs), axis=1)
 
         # initialize variables
-        self.labels = np.zeros(dataset.shape[0])
         self.iterations = 0
         w_old = None
 
@@ -132,12 +131,6 @@ class DualVigilanceART(BaseEstimator, ClusterMixin):
         # evaluate the pattern to get the winning category
         winner, cluster = self.eval_pattern(pattern)
 
-        # update the weight of the winning neuron
-        self.w[winner, :] = self.weight_update(pattern, self.w[winner, :], self.beta)
-
-        # update the cluster mapping of the winning neuron
-        self.cluster_map[winner] = cluster
-
         # check if the uncommitted node was the winner
         if (winner + 1) > self.num_categories:
             self.num_categories += 1
@@ -147,19 +140,22 @@ class DualVigilanceART(BaseEstimator, ClusterMixin):
         if (cluster + 1) > self.num_clusters:
             self.num_clusters += 1
 
+        # update the weight of the winning neuron
+        self.w[winner, :] = self.weight_update(pattern, self.w[winner, :], self.beta)
+
+        # update the cluster mapping of the winning neuron
+        self.cluster_map[winner] = cluster
+
         return cluster
 
     def eval_pattern(self, pattern):
-        # initialize variables
-        matches = np.zeros(self.w.shape[0])
         # calculate the category match values
-        for jx in range(self.w.shape[0]):
-            matches[jx] = self.category_choice(pattern, self.w[jx, :], self.alpha)
+        matches = np.array([self.category_choice(pattern, category, self.alpha) for category in self.w])
         # pick the winning category
         match_attempts = 0
-        while match_attempts < len(matches):
+        while match_attempts < matches.size:
             # winner-take-all selection
-            winner = np.argmax(matches)
+            winner = matches.argmax()
             # vigilance test
             if self.vigilance_check(pattern, self.w[winner, :], self.rho_ub):
                 # the winning category passed the upper bound vigilance test
@@ -167,12 +163,12 @@ class DualVigilanceART(BaseEstimator, ClusterMixin):
             elif self.vigilance_check(pattern, self.w[winner, :], self.rho_lb):
                 # the winning category passed the lower bound vigilance test
                 # create a new category but map it to the same label as winning category
-                return len(matches) - 1, self.cluster_map[winner]
+                return matches.size, self.cluster_map[winner]
             else:
                 # shut off this category from further testing
                 matches[winner] = 0
                 match_attempts += 1
-        return len(matches) - 1, self.num_clusters  # create a new category and a new cluster
+        return matches.size, self.num_clusters  # create a new category and a new cluster
 
     def pattern_compare(self, pattern, category_w):
         if self.distance_fn is not None:
