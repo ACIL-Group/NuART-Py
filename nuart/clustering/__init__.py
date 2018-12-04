@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from nuart.clustering.dual_vigilance_art import DualVigilanceART
+from nuart.clustering.dual_vigilance_fuzzy_art import DualVigilanceFuzzyART
 from nuart.clustering.fuzzy_art import FuzzyART
 from nuart.clustering.hypersphere_art import HypersphereART
 

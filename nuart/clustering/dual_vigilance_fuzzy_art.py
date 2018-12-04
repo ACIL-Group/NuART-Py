@@ -29,7 +29,7 @@ from nuart.common.linear_algebra import max_norm, fuzzy_and
 __author__ = 'Islam Elnabarawy'
 
 
-class DualVigilanceART(BaseEstimator, ClusterMixin):
+class DualVigilanceFuzzyART(BaseEstimator, ClusterMixin):
     def __init__(self, rho_ub, rho_lb, alpha, beta, max_epochs=np.inf, shuffle=True, random_seed=None, w_init=None,
                  cluster_map_init=None, distance_fn=None, match_fn=None, vigilance_fn=None, update_fn=None):
         self.rho_ub = rho_ub
@@ -192,7 +192,7 @@ class DualVigilanceART(BaseEstimator, ClusterMixin):
 def dvfa_cluster(args):
     from sklearn.metrics import adjusted_rand_score
     rho_ub, rho_lb, inputs, targets = args
-    fa = DualVigilanceART(rho_ub, rho_lb, 0.001, 1.0, shuffle=False)
+    fa = DualVigilanceFuzzyART(rho_ub, rho_lb, 0.001, 1.0, shuffle=False)
     labels = fa.fit(inputs)
     return adjusted_rand_score(targets, labels)
 
