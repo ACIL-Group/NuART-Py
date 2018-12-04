@@ -134,7 +134,3 @@ class HypersphereART(BaseEstimator, ClusterMixin):
         return np.concatenate(([r_new], m_new))
 
 
-def ha_cluster(args):
-    from sklearn.metrics import adjusted_rand_score
-    rho, r_bar, ha_inputs, ha_targets = args
-    return adjusted_rand_score(ha_targets, HypersphereART(rho, r_bar, shuffle=False, max_epochs=1).fit(ha_inputs))

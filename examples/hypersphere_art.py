@@ -22,10 +22,16 @@ from matplotlib.patches import Circle
 from scipy.spatial.distance import pdist
 
 from nuart.clustering import HypersphereART
-from nuart.clustering.hypersphere_art import ha_cluster
 from nuart.preprocessing import vat
 
 __author__ = "Islam Elnabarawy"
+
+
+def ha_cluster(args):
+    from sklearn.metrics import adjusted_rand_score
+    rho, r_bar, ha_inputs, ha_targets = args
+    return adjusted_rand_score(ha_targets, HypersphereART(rho, r_bar, shuffle=False, max_epochs=1).fit(ha_inputs))
+
 
 if __name__ == '__main__':
     # load the data
