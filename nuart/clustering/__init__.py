@@ -15,5 +15,6 @@
 """
 from nuart.clustering.dual_vigilance_art import DualVigilanceART
 from nuart.clustering.fuzzy_art import FuzzyART
+from nuart.clustering.hypersphere_art import HypersphereART
 
 __author__ = "Islam Elnabarawy"
