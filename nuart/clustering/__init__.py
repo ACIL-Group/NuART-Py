@@ -14,6 +14,7 @@
    limitations under the License.
 """
 from nuart.clustering.dual_vigilance_fuzzy_art import DualVigilanceFuzzyART
+from nuart.clustering.dual_vigilance_hypersphere_art import DualVigilanceHypersphereART
 from nuart.clustering.fuzzy_art import FuzzyART
 from nuart.clustering.hypersphere_art import HypersphereART
 
