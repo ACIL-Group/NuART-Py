@@ -130,7 +130,7 @@ class HypersphereART(BaseEstimator, ClusterMixin):
         dist_old = pattern - m_old
         dist_norm = l2_norm(dist_old)
         r_new = r_old + 0.5 * beta * (max(r_old, dist_norm) - r_old)
-        m_new = m_old + 0.5 * beta * (1 - (min(r_old, dist_norm) / dist_norm)) * dist_old
+        m_new = (m_old + 0.5 * beta * (1 - (min(r_old, dist_norm) / dist_norm)) * dist_old) if dist_norm else m_old
         return np.concatenate(([r_new], m_new))
 
 
